@@ -11,22 +11,25 @@ const tagColors = {
   'Más vendido': { bg: '#fef3c7', text: '#92400e' },
   'Nuevo': { bg: '#d1fae5', text: '#065f46' },
   'Infantil': { bg: '#dbeafe', text: '#1e40af' },
-  'Premium': { bg: '#ede9fe', text: '#5b21b6' },
 };
 
 function FurnitureIllustration({ finish, category }) {
   const color = finishColors[finish] || finishColors.natural;
-  const dark = finish === 'black' ? '#1a1a1a' : (finish === 'white' ? '#d0d0cc' : '#a0722a');
+  const dark = finish === 'white' ? '#d0d0cc' : '#a0722a';
 
   const illustrations = {
     'Estanterías': (
       <svg viewBox="0 0 120 130" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
+        {/* Vertical panels */}
         <rect x="8" y="4" width="8" height="122" rx="2" fill={color} />
         <rect x="104" y="4" width="8" height="122" rx="2" fill={color} />
+        {/* Top & bottom */}
         <rect x="8" y="4" width="104" height="8" rx="2" fill={dark} />
         <rect x="8" y="118" width="104" height="8" rx="2" fill={dark} />
+        {/* Shelves */}
         <rect x="8" y="48" width="104" height="7" rx="1" fill={dark} />
         <rect x="8" y="84" width="104" height="7" rx="1" fill={dark} />
+        {/* Books */}
         <rect x="20" y="14" width="18" height="32" rx="2" fill={dark} opacity="0.4" />
         <rect x="42" y="18" width="14" height="28" rx="2" fill={dark} opacity="0.3" />
         <rect x="60" y="20" width="22" height="26" rx="2" fill={dark} opacity="0.35" />
@@ -34,66 +37,59 @@ function FurnitureIllustration({ finish, category }) {
         <rect x="50" y="56" width="16" height="26" rx="2" fill={dark} opacity="0.4" />
       </svg>
     ),
-    'Modulares': (
-      <svg viewBox="0 0 140 80" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
-        <rect x="4" y="10" width="132" height="60" rx="3" fill={color} />
-        <rect x="4" y="65" width="132" height="5" rx="2" fill={dark} />
-        <rect x="4" y="10" width="132" height="6" rx="2" fill={dark} />
-        <rect x="48" y="16" width="4" height="49" fill={dark} opacity="0.5" />
-        <rect x="88" y="16" width="4" height="49" fill={dark} opacity="0.5" />
-        <rect x="10" y="22" width="30" height="18" rx="2" fill={dark} opacity="0.2" />
-        <rect x="10" y="44" width="30" height="18" rx="2" fill={dark} opacity="0.2" />
-        <rect x="55" y="22" width="25" height="40" rx="2" fill={dark} opacity="0.15" />
-        <rect x="95" y="22" width="35" height="40" rx="2" fill={dark} opacity="0.15" />
+    'Cocina': (
+      <svg viewBox="0 0 130 110" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
+        {/* Counter top */}
+        <rect x="6" y="36" width="118" height="10" rx="2" fill={dark} />
+        {/* Cabinet body */}
+        <rect x="6" y="46" width="118" height="58" rx="2" fill={color} />
+        {/* Left door */}
+        <rect x="10" y="50" width="52" height="50" rx="2" fill={dark} opacity="0.15" stroke={dark} strokeWidth="1.5" />
+        {/* Right door */}
+        <rect x="68" y="50" width="52" height="50" rx="2" fill={dark} opacity="0.15" stroke={dark} strokeWidth="1.5" />
+        {/* Door handles */}
+        <rect x="57" y="72" width="5" height="14" rx="2.5" fill={dark} opacity="0.6" />
+        <rect x="68" y="72" width="5" height="14" rx="2.5" fill={dark} opacity="0.6" />
+        {/* Sink basin */}
+        <rect x="28" y="8" width="74" height="30" rx="4" fill={dark} opacity="0.25" />
+        <rect x="34" y="12" width="62" height="22" rx="3" fill={dark} opacity="0.2" />
+        {/* Faucet */}
+        <rect x="60" y="4" width="5" height="12" rx="2" fill={dark} opacity="0.5" />
+        <rect x="52" y="2" width="21" height="5" rx="2" fill={dark} opacity="0.45" />
+        {/* Plinth */}
+        <rect x="12" y="100" width="106" height="6" rx="1" fill={dark} opacity="0.4" />
       </svg>
     ),
     'Infantil': (
-      <svg viewBox="0 0 130 110" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
-        <rect x="8" y="40" width="114" height="8" rx="3" fill={color} />
-        <rect x="8" y="48" width="8" height="55" rx="2" fill={dark} opacity="0.7" />
-        <rect x="114" y="48" width="8" height="55" rx="2" fill={dark} opacity="0.7" />
-        <rect x="20" y="50" width="36" height="28" rx="2" fill={dark} opacity="0.25" />
-        <rect x="62" y="50" width="48" height="10" rx="1" fill={dark} opacity="0.2" />
-        <rect x="62" y="66" width="48" height="10" rx="1" fill={dark} opacity="0.2" />
-        <rect x="20" y="10" width="80" height="28" rx="3" fill={color} opacity="0.7" />
-        <rect x="20" y="10" width="80" height="5" rx="2" fill={dark} opacity="0.5" />
-        <rect x="56" y="18" width="18" height="16" rx="2" fill={dark} opacity="0.2" />
-      </svg>
-    ),
-    'Dormitorio': (
-      <svg viewBox="0 0 140 130" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
-        <rect x="6" y="4" width="10" height="122" rx="2" fill={color} />
-        <rect x="124" y="4" width="10" height="122" rx="2" fill={color} />
-        <rect x="6" y="4" width="128" height="8" rx="2" fill={dark} />
-        <rect x="6" y="118" width="128" height="8" rx="2" fill={dark} />
-        <rect x="16" y="16" width="50" height="100" rx="2" fill={dark} opacity="0.1" />
-        <rect x="74" y="16" width="50" height="100" rx="2" fill={dark} opacity="0.1" />
-        <line x1="70" y1="12" x2="70" y2="118" stroke={dark} strokeWidth="2" opacity="0.4" />
-        <rect x="22" y="22" width="38" height="6" rx="3" fill={color} opacity="0.6" />
-        <rect x="80" y="22" width="38" height="6" rx="3" fill={color} opacity="0.6" />
-      </svg>
-    ),
-    'Living': (
-      <svg viewBox="0 0 160 90" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
-        <rect x="6" y="22" width="148" height="52" rx="4" fill={color} />
-        <rect x="6" y="70" width="12" height="16" rx="2" fill={dark} opacity="0.7" />
-        <rect x="142" y="70" width="12" height="16" rx="2" fill={dark} opacity="0.7" />
-        <rect x="18" y="70" width="12" height="12" rx="2" fill={dark} opacity="0.5" />
-        <rect x="130" y="70" width="12" height="12" rx="2" fill={dark} opacity="0.5" />
-        <ellipse cx="80" cy="12" rx="30" ry="8" fill={dark} opacity="0.15" />
-      </svg>
-    ),
-    'Auxiliares': (
-      <svg viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
-        <rect x="8" y="8" width="84" height="104" rx="3" fill={color} />
-        <rect x="8" y="8" width="84" height="8" rx="2" fill={dark} opacity="0.6" />
-        <rect x="8" y="44" width="84" height="6" rx="1" fill={dark} opacity="0.4" />
-        <rect x="8" y="78" width="84" height="6" rx="1" fill={dark} opacity="0.4" />
-        <circle cx="50" cy="28" r="4" fill={dark} opacity="0.3" />
-        <circle cx="50" cy="63" r="4" fill={dark} opacity="0.3" />
-        <circle cx="50" cy="96" r="4" fill={dark} opacity="0.3" />
-        <rect x="8" y="108" width="20" height="6" rx="2" fill={dark} opacity="0.6" />
-        <rect x="72" y="108" width="20" height="6" rx="2" fill={dark} opacity="0.6" />
+      <svg viewBox="0 0 140 120" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
+        {/* Tabletop */}
+        <rect x="20" y="50" width="100" height="10" rx="3" fill={color} />
+        {/* Table legs */}
+        <rect x="26" y="60" width="7" height="38" rx="2" fill={dark} opacity="0.6" />
+        <rect x="107" y="60" width="7" height="38" rx="2" fill={dark} opacity="0.6" />
+        <rect x="50" y="60" width="6" height="38" rx="2" fill={dark} opacity="0.45" />
+        <rect x="84" y="60" width="6" height="38" rx="2" fill={dark} opacity="0.45" />
+        {/* Chair front-left: seat */}
+        <rect x="4" y="58" width="24" height="7" rx="2" fill={color} opacity="0.9" />
+        {/* Chair front-left: legs */}
+        <rect x="6" y="65" width="4" height="20" rx="1" fill={dark} opacity="0.5" />
+        <rect x="20" y="65" width="4" height="20" rx="1" fill={dark} opacity="0.5" />
+        {/* Chair front-left: backrest */}
+        <rect x="4" y="42" width="24" height="17" rx="2" fill={dark} opacity="0.18" />
+        {/* Chair front-right: seat */}
+        <rect x="112" y="58" width="24" height="7" rx="2" fill={color} opacity="0.9" />
+        {/* Chair front-right: legs */}
+        <rect x="114" y="65" width="4" height="20" rx="1" fill={dark} opacity="0.5" />
+        <rect x="128" y="65" width="4" height="20" rx="1" fill={dark} opacity="0.5" />
+        {/* Chair front-right: backrest */}
+        <rect x="112" y="42" width="24" height="17" rx="2" fill={dark} opacity="0.18" />
+        {/* Chair back (perspective): seat */}
+        <rect x="46" y="34" width="48" height="6" rx="2" fill={color} opacity="0.75" />
+        {/* Chair back: legs */}
+        <rect x="48" y="40" width="4" height="12" rx="1" fill={dark} opacity="0.4" />
+        <rect x="88" y="40" width="4" height="12" rx="1" fill={dark} opacity="0.4" />
+        {/* Chair back: backrest */}
+        <rect x="46" y="22" width="48" height="13" rx="2" fill={dark} opacity="0.13" />
       </svg>
     ),
   };

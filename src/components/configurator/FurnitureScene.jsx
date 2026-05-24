@@ -14,9 +14,14 @@ function CameraFitter({ config, controlsRef }) {
   const targetDist = useRef(5);
 
   useEffect(() => {
-    const maxDim = Math.max(config.width, config.height, config.depth) / 10;
-    targetDist.current = Math.max(3.5, maxDim * 1.8);
-  }, [config.width, config.height, config.depth]);
+    let effectiveMax = Math.max(config.width, config.height, config.depth) / 10;
+    if (config.furnitureType === 'infantil') {
+      // Las sillas fijas extienden el escenario ~3u por cada lado
+      const sceneSpan = Math.max(config.width, config.depth) / 10 + 6.0;
+      effectiveMax = Math.max(effectiveMax, sceneSpan);
+    }
+    targetDist.current = Math.max(7.0, effectiveMax * 2.4);
+  }, [config.width, config.height, config.depth, config.furnitureType]);
 
   useFrame(() => {
     const controls = controlsRef.current;
@@ -48,7 +53,8 @@ export default function FurnitureScene({ config }) {
   const controlsRef = useRef();
 
   const maxDim = Math.max(config.width, config.height, config.depth) / 10;
-  const camZ = Math.max(3.5, maxDim * 1.8);
+  const infantilSpan = config.furnitureType === 'infantil' ? Math.max(config.width, config.depth) / 10 + 6.0 : 0;
+  const camZ = Math.max(7.0, Math.max(maxDim, infantilSpan) * 2.4);
 
   return (
     <Canvas

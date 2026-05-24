@@ -17,7 +17,26 @@ const EMAILJS_PUBLIC_KEY   = 'YOUR_PUBLIC_KEY';
 
 const STATUS = { IDLE: 'idle', SENDING: 'sending', SUCCESS: 'success', ERROR: 'error' };
 
-function InputField({ label, type = 'text', name, value, onChange, placeholder, required }) {
+// Número chileno: +56 seguido de 9 dígitos (móvil 9XXXXXXXX o fijo 2XXXXXXXX, etc.)
+const PHONE_REGEX = /^\+56[2-9]\d{8}$/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const validate = (f) => {
+  const errs = {};
+  if (!f.name.trim())
+    errs.name = 'El nombre es obligatorio.';
+  if (!f.phone.trim() || f.phone === '+56')
+    errs.phone = 'El teléfono es obligatorio.';
+  else if (!PHONE_REGEX.test(f.phone))
+    errs.phone = 'Formato inválido. Ej: +56952565525 (9 dígitos tras +56)';
+  if (!f.email.trim())
+    errs.email = 'El correo electrónico es obligatorio.';
+  else if (!EMAIL_REGEX.test(f.email))
+    errs.email = 'Ingresa un correo electrónico válido.';
+  return errs;
+};
+
+function InputField({ label, type = 'text', name, value, onChange, placeholder, required, error }) {
   return (
     <div style={{ marginBottom: '1rem' }}>
       <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#3a280f', marginBottom: '0.35rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
@@ -29,11 +48,10 @@ function InputField({ label, type = 'text', name, value, onChange, placeholder, 
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        required={required}
         style={{
           width: '100%',
           padding: '0.65rem 0.85rem',
-          border: '1.5px solid #e8d4b8',
+          border: `1.5px solid ${error ? '#d9534f' : '#e8d4b8'}`,
           borderRadius: 8,
           fontSize: '0.9rem',
           color: '#1e1408',
@@ -42,22 +60,25 @@ function InputField({ label, type = 'text', name, value, onChange, placeholder, 
           transition: 'border-color 0.2s',
           boxSizing: 'border-box',
         }}
-        onFocus={e => (e.target.style.borderColor = '#c08a3a')}
-        onBlur={e => (e.target.style.borderColor = '#e8d4b8')}
+        onFocus={e => (e.target.style.borderColor = error ? '#d9534f' : '#c08a3a')}
+        onBlur={e => (e.target.style.borderColor = error ? '#d9534f' : '#e8d4b8')}
       />
+      {error && <p style={{ color: '#d9534f', fontSize: '0.74rem', margin: '0.25rem 0 0 0.1rem', lineHeight: 1.4 }}>{error}</p>}
     </div>
   );
 }
 
 export default function ContactModal({ isOpen, onClose, config }) {
-  const [form, setForm] = useState({ name: '', phone: '', email: '', message: '' });
+  const [form, setForm] = useState({ name: '', phone: '+56', email: '', message: '' });
   const [status, setStatus] = useState(STATUS.IDLE);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
       setStatus(STATUS.IDLE);
-      setForm({ name: '', phone: '', email: '', message: '' });
+      setErrors({});
+      setForm({ name: '', phone: '+56', email: '', message: '' });
     } else {
       document.body.style.overflow = '';
     }
@@ -69,11 +90,37 @@ export default function ContactModal({ isOpen, onClose, config }) {
   const finishLabel = finishOptions.find(f => f.id === config.finish)?.label || config.finish;
   const price = calculatePrice(config);
 
-  const handleChange = e => setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleChange = e => {
+    const { name, value } = e.target;
+    const updated = { ...form, [name]: value };
+    setForm(updated);
+    // Revalidar campo tocado en tiempo real
+    if (errors[name] !== undefined) {
+      const newErrs = validate(updated);
+      setErrors(prev => ({ ...prev, [name]: newErrs[name] || '' }));
+    }
+  };
+
+  // Teléfono: siempre empieza con +56, solo dígitos después
+  const handlePhoneChange = e => {
+    let val = e.target.value;
+    if (!val.startsWith('+56')) val = '+56';
+    const digits = val.slice(3).replace(/\D/g, '').slice(0, 9);
+    const updated = { ...form, phone: '+56' + digits };
+    setForm(updated);
+    if (errors.phone !== undefined) {
+      const newErrs = validate(updated);
+      setErrors(prev => ({ ...prev, phone: newErrs.phone || '' }));
+    }
+  };
 
   const handleSubmit = async e => {
     e.preventDefault();
-    if (!form.name.trim() || !form.phone.trim() || !form.email.trim()) return;
+    const errs = validate(form);
+    if (Object.keys(errs).length > 0) {
+      setErrors(errs);
+      return;
+    }
 
     setStatus(STATUS.SENDING);
 
@@ -211,9 +258,9 @@ export default function ContactModal({ isOpen, onClose, config }) {
             </div>
 
             <form onSubmit={handleSubmit} noValidate>
-              <InputField label="Nombre" name="name" value={form.name} onChange={handleChange} placeholder="Tu nombre completo" required />
-              <InputField label="Teléfono / WhatsApp" type="tel" name="phone" value={form.phone} onChange={handleChange} placeholder="+56 9 XXXX XXXX" required />
-              <InputField label="Correo electrónico" type="email" name="email" value={form.email} onChange={handleChange} placeholder="tucorreo@ejemplo.com" required />
+              <InputField label="Nombre" name="name" value={form.name} onChange={handleChange} placeholder="Tu nombre completo" required error={errors.name} />
+              <InputField label="Teléfono / WhatsApp" type="tel" name="phone" value={form.phone} onChange={handlePhoneChange} placeholder="+56912345678" required error={errors.phone} />
+              <InputField label="Correo electrónico" type="email" name="email" value={form.email} onChange={handleChange} placeholder="tucorreo@ejemplo.com" required error={errors.email} />
 
               <div style={{ marginBottom: '1.5rem' }}>
                 <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#3a280f', marginBottom: '0.35rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
@@ -227,7 +274,7 @@ export default function ContactModal({ isOpen, onClose, config }) {
                   rows={3}
                   style={{
                     width: '100%', padding: '0.65rem 0.85rem',
-                    border: '1.5px solid #e8d4b8', borderRadius: 8,
+                    border: `1.5px solid #e8d4b8`, borderRadius: 8,
                     fontSize: '0.9rem', color: '#1e1408',
                     backgroundColor: '#fdf8f0', outline: 'none',
                     resize: 'vertical', fontFamily: 'inherit',

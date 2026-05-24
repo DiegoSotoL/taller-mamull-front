@@ -5,11 +5,18 @@ import ContactModal from '../configurator/ContactModal.jsx';
 const FurnitureScene = lazy(() => import('../configurator/FurnitureScene.jsx'));
 
 const DEFAULT_CONFIG = {
-  width: 90,
-  height: 180,
-  depth: 30,
-  shelves: 4,
+  width: 120,
+  height: 150,
+  depth: 25,
+  shelves: 3,
   finish: 'natural',
+  furnitureType: 'repisas',
+};
+
+const TYPE_HEADINGS = {
+  repisas: 'repisas flotantes',
+  lavaplatos: 'mueble bajo lavaplatos',
+  infantil: 'set infantil de mesa y sillas',
 };
 
 function Scene3DPlaceholder() {
@@ -35,7 +42,7 @@ export default function Configurator() {
 
   return (
     <section id="configurador" style={{ padding: '6rem 1.5rem', backgroundColor: '#1e1408' }}>
-      <div style={{ maxWidth: 1400, margin: '0 auto' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <span style={{ fontSize: '0.75rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c08a3a', fontWeight: 600 }}>
@@ -44,7 +51,7 @@ export default function Configurator() {
           <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', color: '#fdf8f0', margin: '0.75rem 0 1rem', lineHeight: 1.2 }}>
             Diseñá tu{' '}
             <span style={{ background: 'linear-gradient(135deg, #c08a3a, #d4a96a)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-              biblioteca a medida
+              {TYPE_HEADINGS[config.furnitureType] || 'mueble a medida'}
             </span>
           </h2>
           <p style={{ color: '#8c7356', maxWidth: 560, margin: '0 auto', lineHeight: 1.7, fontSize: '0.95rem' }}>
@@ -67,7 +74,7 @@ export default function Configurator() {
             borderRadius: 16,
             overflow: 'hidden',
             position: 'relative',
-            minHeight: 500,
+            minHeight: 460,
             boxShadow: '0 8px 40px rgba(0,0,0,0.4)',
           }}>
             <Suspense fallback={<Scene3DPlaceholder />}>
